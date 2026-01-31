@@ -16,6 +16,8 @@ export interface Game {
   isTrending: boolean
   isFree: boolean
   platforms: string[]
+  discountEndsAt?: string
+  metacritic?: number
 }
 
 export interface CartItem {

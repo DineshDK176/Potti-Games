@@ -23,6 +23,8 @@ export const games: Game[] = [
     isTrending: true,
     isFree: false,
     platforms: ["PC", "PlayStation", "Xbox"],
+    discountEndsAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+    metacritic: 94,
   },
   {
     id: "2",
@@ -107,6 +109,8 @@ export const games: Game[] = [
     isTrending: true,
     isFree: false,
     platforms: ["PC", "PlayStation", "Xbox"],
+    discountEndsAt: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+    metacritic: 88,
   },
   {
     id: "6",

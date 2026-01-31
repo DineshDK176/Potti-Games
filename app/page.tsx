@@ -4,6 +4,7 @@ import { HeroSection } from "@/components/home/hero-section"
 import { GameGrid } from "@/components/home/game-grid"
 import { TrendingSection } from "@/components/home/trending-section"
 import { getFeaturedGames, getTrendingGames, getTopRatedGames, getNewReleases } from "@/lib/rawg"
+import { convertRawgToGame } from "@/lib/game-converter"
 
 // Rebuild cache
 export default async function HomePage() {
@@ -15,10 +16,11 @@ export default async function HomePage() {
       getNewReleases().catch(() => ({ results: [] })),
     ])
 
-    const featuredGames = featuredData.results
-    const trendingGames = trendingData.results
-    const topRatedGames = topRatedData.results
-    const newReleases = newReleasesData.results
+    // Convert RAWG games to our Game type with pricing (filter out nulls)
+    const featuredGames = (featuredData.results || []).map(convertRawgToGame).filter(Boolean) as NonNullable<ReturnType<typeof convertRawgToGame>>[]
+    const trendingGames = (trendingData.results || []).map(convertRawgToGame).filter(Boolean) as NonNullable<ReturnType<typeof convertRawgToGame>>[]
+    const topRatedGames = (topRatedData.results || []).map(convertRawgToGame).filter(Boolean) as NonNullable<ReturnType<typeof convertRawgToGame>>[]
+    const newReleases = (newReleasesData.results || []).map(convertRawgToGame).filter(Boolean) as NonNullable<ReturnType<typeof convertRawgToGame>>[]
 
     const heroGame = featuredGames[0]
 

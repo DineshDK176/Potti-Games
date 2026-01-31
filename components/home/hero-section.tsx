@@ -5,48 +5,33 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Star, Play, ShoppingCart, Calendar } from "lucide-react"
 import { useCart } from "@/hooks/use-store"
-import { RawgGame, generatePrice, generateOriginalPrice } from "@/lib/rawg"
+import { Game } from "@/lib/types"
 
 interface HeroSectionProps {
-  game: RawgGame
+  game: Game
 }
 
 export function HeroSection({ game }: HeroSectionProps) {
   const { addToCart } = useCart()
 
-  const price = generatePrice(game)
-  const originalPrice = generateOriginalPrice(game)
-  const discountPercent = originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0
+  const discountPercent = game.originalPrice 
+    ? Math.round(((game.originalPrice - game.price) / game.originalPrice) * 100) 
+    : 0
 
   const handleAddToCart = () => {
-    addToCart({
-      id: String(game.id),
-      title: game.name,
-      slug: game.slug,
-      coverImage: game.background_image,
-      screenshots: game.short_screenshots?.map(s => s.image) || [],
-      description: "",
-      price,
-      originalPrice: originalPrice || undefined,
-      rating: game.rating,
-      genre: game.genres?.map(g => g.name) || [],
-      developer: game.developers?.[0]?.name || "Unknown",
-      publisher: game.publishers?.[0]?.name || "Unknown",
-      releaseDate: game.released || "",
-      isFeatured: true,
-      isTrending: false,
-      isFree: price === 0,
-      platforms: game.platforms?.map(p => p.platform.name) || [],
-    })
+    addToCart(game)
   }
+
+  const price = game.price;
+  const originalPrice = game.originalPrice;
 
   return (
     <section className="relative overflow-hidden bg-[#121212]">
       {/* Background Image */}
       <div className="absolute inset-0">
-        {game.background_image && (
+        {game.coverImage && (
           <Image
-            src={game.background_image || "/placeholder.svg"}
+            src={game.coverImage || "/placeholder.svg"}
             alt=""
             fill
             className="object-cover opacity-30"
@@ -73,7 +58,7 @@ export function HeroSection({ game }: HeroSectionProps) {
             </div>
             
             <h1 className="text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
-              {game.name}
+              {game.title}
             </h1>
             
             <div className="mt-4 flex flex-wrap items-center gap-4">
@@ -83,16 +68,16 @@ export function HeroSection({ game }: HeroSectionProps) {
                   <span className="font-semibold text-white">{game.rating.toFixed(1)}</span>
                 </div>
               )}
-              {game.released && (
+              {game.releaseDate && (
                 <div className="flex items-center gap-1 text-[#a0a0a0]">
                   <Calendar className="h-4 w-4" />
-                  <span className="text-sm">{new Date(game.released).getFullYear()}</span>
+                  <span className="text-sm">{new Date(game.releaseDate).getFullYear()}</span>
                 </div>
               )}
               <div className="flex flex-wrap gap-2">
-                {game.genres?.slice(0, 3).map((g) => (
-                  <span key={g.id} className="rounded-full bg-[#2a2a2a] px-3 py-1 text-xs text-[#a0a0a0]">
-                    {g.name}
+                {game.genre?.slice(0, 3).map((g) => (
+                  <span key={g} className="rounded-full bg-[#2a2a2a] px-3 py-1 text-xs text-[#a0a0a0]">
+                    {g}
                   </span>
                 ))}
               </div>
@@ -101,8 +86,8 @@ export function HeroSection({ game }: HeroSectionProps) {
             {/* Platforms */}
             <div className="mt-4 flex items-center gap-2 text-[#666]">
               {game.platforms?.slice(0, 4).map((p) => (
-                <span key={p.platform.id} className="text-xs">
-                  {p.platform.name}
+                <span key={p} className="text-xs">
+                  {p}
                 </span>
               ))}
             </div>
@@ -148,10 +133,10 @@ export function HeroSection({ game }: HeroSectionProps) {
           <div className="hidden lg:block">
             <Link href={`/games/${game.slug}`}>
               <div className="relative aspect-video overflow-hidden rounded-lg shadow-2xl transition-transform duration-300 hover:scale-[1.02]">
-                {game.background_image && (
+                {game.coverImage && (
                   <Image
-                    src={game.background_image || "/placeholder.svg"}
-                    alt={game.name}
+                    src={game.coverImage || "/placeholder.svg"}
+                    alt={game.title}
                     fill
                     className="object-cover"
                     priority
