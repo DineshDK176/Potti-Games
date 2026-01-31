@@ -5,12 +5,12 @@ import Image from "next/image"
 import { ChevronRight, Heart, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useCart, useWishlist } from "@/hooks/use-store"
-import { RawgGame, generatePrice, generateOriginalPrice } from "@/lib/rawg"
+import { Game } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 interface GameGridProps {
   title: string
-  games: RawgGame[]
+  games: Game[]
   href?: string
 }
 
@@ -43,45 +43,27 @@ export function GameGrid({ title, games, href }: GameGridProps) {
   )
 }
 
-function GameGridCard({ game }: { game: RawgGame }) {
+function GameGridCard({ game }: { game: Game }) {
   const { addToCart } = useCart()
   const { isInWishlist, toggleWishlist } = useWishlist()
-  const inWishlist = isInWishlist(String(game.id))
+  const inWishlist = isInWishlist(game.id)
 
-  const price = generatePrice(game)
-  const originalPrice = generateOriginalPrice(game)
-  const discountPercent = originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0
+  const discountPercent = game.originalPrice 
+    ? Math.round(((game.originalPrice - game.price) / game.originalPrice) * 100) 
+    : 0
 
   const handleAddToCart = () => {
-    addToCart({
-      id: String(game.id),
-      title: game.name,
-      slug: game.slug,
-      coverImage: game.background_image,
-      screenshots: game.short_screenshots?.map(s => s.image) || [],
-      description: "",
-      price,
-      originalPrice: originalPrice || undefined,
-      rating: game.rating,
-      genre: game.genres?.map(g => g.name) || [],
-      developer: game.developers?.[0]?.name || "Unknown",
-      publisher: game.publishers?.[0]?.name || "Unknown",
-      releaseDate: game.released || "",
-      isFeatured: false,
-      isTrending: false,
-      isFree: price === 0,
-      platforms: game.platforms?.map(p => p.platform.name) || [],
-    })
+    addToCart(game)
   }
 
   return (
     <div className="group">
       <Link href={`/games/${game.slug}`}>
         <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-[#2a2a2a]">
-          {game.background_image ? (
+          {game.coverImage ? (
             <Image
-              src={game.background_image || "/placeholder.svg"}
-              alt={game.name}
+              src={game.coverImage}
+              alt={game.title}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
@@ -100,7 +82,7 @@ function GameGridCard({ game }: { game: RawgGame }) {
           <button
             onClick={(e) => {
               e.preventDefault()
-              toggleWishlist(String(game.id))
+              toggleWishlist(game.id)
             }}
             className="absolute right-2 top-2 rounded-full bg-black/50 p-1.5 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-black/70"
           >
@@ -131,12 +113,12 @@ function GameGridCard({ game }: { game: RawgGame }) {
       <div className="mt-2">
         <Link href={`/games/${game.slug}`}>
           <h3 className="text-sm font-medium text-white truncate hover:text-[#0074e4] transition-colors">
-            {game.name}
+            {game.title}
           </h3>
         </Link>
         <div className="mt-1 flex items-center gap-2">
-          {game.genres?.[0] && (
-            <span className="text-xs text-[#666]">{game.genres[0].name}</span>
+          {game.genre?.[0] && (
+            <span className="text-xs text-[#666]">{game.genre[0]}</span>
           )}
           {game.rating > 0 && (
             <div className="flex items-center gap-0.5">
@@ -146,13 +128,13 @@ function GameGridCard({ game }: { game: RawgGame }) {
           )}
         </div>
         <div className="mt-1 flex items-center gap-2">
-          {price === 0 ? (
+          {game.isFree ? (
             <span className="text-sm font-medium text-[#10b981]">Free</span>
           ) : (
             <>
-              <span className="text-sm font-medium text-white">${price.toFixed(2)}</span>
-              {originalPrice && (
-                <span className="text-xs text-[#666] line-through">${originalPrice.toFixed(2)}</span>
+              <span className="text-sm font-medium text-white">${game.price.toFixed(2)}</span>
+              {game.originalPrice && (
+                <span className="text-xs text-[#666] line-through">${game.originalPrice.toFixed(2)}</span>
               )}
             </>
           )}

@@ -213,26 +213,10 @@ export function GameCard({ game, variant = "default" }: GameCardProps) {
                 )}
               </div>
             )}
-          </div>
-          {timeLeft && game.originalPrice && (
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Clock className="h-3 w-3" />
-              <span>{timeLeft}</span>
-            </div>
-          )}
-        </div>
-        <div className="mt-3 flex items-center justify-between">
-          <div className="flex flex-col gap-0.5">
-            {game.isFree ? (
-              <span className="font-bold text-secondary">Free to Play</span>
-            ) : (
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-foreground">${game.price.toFixed(2)}</span>
-                {game.originalPrice && (
-                  <span className="text-sm text-muted-foreground line-through">
-                    ${game.originalPrice.toFixed(2)}
-                  </span>
-                )}
+            {timeLeft && game.originalPrice && (
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <Clock className="h-3 w-3" />
+                <span>{timeLeft}</span>
               </div>
             )}
           </div>
