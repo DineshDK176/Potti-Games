@@ -7,8 +7,16 @@ if (!API_AVAILABLE) {
   console.warn('[v0] RAWG_API_KEY not configured. Using demo data. Set your API key in Vars to use real data.')
 }
 
-// Mock games for demo purposes
-const MOCK_GAMES: RawgGame[] = [
+// Extended interface for games with pricing
+export interface RawgGameWithPrice extends RawgGame {
+  price: number
+  originalPrice?: number
+  isFree: boolean
+  discountEndsAt?: string
+}
+
+// Mock games for demo purposes with Epic Games-style pricing
+const MOCK_GAMES: RawgGameWithPrice[] = [
   {
     id: 1,
     slug: "elden-ring",
@@ -22,6 +30,9 @@ const MOCK_GAMES: RawgGame[] = [
     genres: [{ id: 1, name: "Action", slug: "action" }],
     platforms: [{ platform: { id: 1, name: "PC", slug: "pc" } }],
     stores: [{ store: { id: 1, name: "Steam", slug: "steam" } }],
+    price: 59.99,
+    originalPrice: 59.99,
+    isFree: false,
   },
   {
     id: 2,
@@ -36,6 +47,10 @@ const MOCK_GAMES: RawgGame[] = [
     genres: [{ id: 2, name: "RPG", slug: "role-playing-games-rpg" }],
     platforms: [{ platform: { id: 1, name: "PC", slug: "pc" } }],
     stores: [{ store: { id: 1, name: "Steam", slug: "steam" } }],
+    price: 41.99,
+    originalPrice: 59.99,
+    isFree: false,
+    discountEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
   },
   {
     id: 3,
@@ -50,6 +65,9 @@ const MOCK_GAMES: RawgGame[] = [
     genres: [{ id: 2, name: "RPG", slug: "role-playing-games-rpg" }],
     platforms: [{ platform: { id: 1, name: "PC", slug: "pc" } }],
     stores: [{ store: { id: 1, name: "Steam", slug: "steam" } }],
+    price: 69.99,
+    originalPrice: 69.99,
+    isFree: false,
   },
   {
     id: 4,
@@ -64,6 +82,10 @@ const MOCK_GAMES: RawgGame[] = [
     genres: [{ id: 1, name: "Action", slug: "action" }],
     platforms: [{ platform: { id: 1, name: "PC", slug: "pc" } }],
     stores: [{ store: { id: 1, name: "Steam", slug: "steam" } }],
+    price: 29.99,
+    originalPrice: 59.99,
+    isFree: false,
+    discountEndsAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days from now
   },
   {
     id: 5,
@@ -78,6 +100,9 @@ const MOCK_GAMES: RawgGame[] = [
     genres: [{ id: 2, name: "RPG", slug: "role-playing-games-rpg" }],
     platforms: [{ platform: { id: 2, name: "Nintendo Switch", slug: "nintendo-switch" } }],
     stores: [{ store: { id: 2, name: "Nintendo Store", slug: "nintendo" } }],
+    price: 59.99,
+    originalPrice: 59.99,
+    isFree: false,
   },
   {
     id: 6,
@@ -92,6 +117,43 @@ const MOCK_GAMES: RawgGame[] = [
     genres: [{ id: 1, name: "Action", slug: "action" }],
     platforms: [{ platform: { id: 1, name: "PC", slug: "pc" } }],
     stores: [{ store: { id: 1, name: "Steam", slug: "steam" } }],
+    price: 39.99,
+    originalPrice: 39.99,
+    isFree: false,
+  },
+  {
+    id: 7,
+    slug: "fortnite",
+    name: "Fortnite",
+    released: "2017-07-25",
+    background_image: "https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=800&h=450&fit=crop",
+    rating: 4.0,
+    ratings_count: 8000,
+    metacritic: 78,
+    playtime: 200,
+    genres: [{ id: 1, name: "Action", slug: "action" }],
+    platforms: [{ platform: { id: 1, name: "PC", slug: "pc" } }],
+    stores: [{ store: { id: 3, name: "Epic Games", slug: "epic-games" } }],
+    price: 0,
+    isFree: true,
+  },
+  {
+    id: 8,
+    slug: "gta-v",
+    name: "Grand Theft Auto V",
+    released: "2013-09-17",
+    background_image: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=800&h=450&fit=crop",
+    rating: 4.5,
+    ratings_count: 9500,
+    metacritic: 96,
+    playtime: 150,
+    genres: [{ id: 1, name: "Action", slug: "action" }],
+    platforms: [{ platform: { id: 1, name: "PC", slug: "pc" } }],
+    stores: [{ store: { id: 1, name: "Steam", slug: "steam" } }],
+    price: 14.99,
+    originalPrice: 29.99,
+    isFree: false,
+    discountEndsAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days from now
   },
 ]
 

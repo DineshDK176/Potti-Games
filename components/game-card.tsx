@@ -2,11 +2,12 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { Heart, ShoppingCart, Star } from "lucide-react"
+import { Heart, ShoppingCart, Star, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useCart, useWishlist } from "@/hooks/use-store"
+import { useDiscountCountdown } from "@/hooks/use-realtime-games"
 import { Game } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -19,6 +20,7 @@ export function GameCard({ game, variant = "default" }: GameCardProps) {
   const { addToCart } = useCart()
   const { isInWishlist, toggleWishlist } = useWishlist()
   const inWishlist = isInWishlist(game.id)
+  const timeLeft = useDiscountCountdown(game.discountEndsAt)
 
   const discountPercent = game.originalPrice
     ? Math.round(((game.originalPrice - game.price) / game.originalPrice) * 100)
@@ -60,20 +62,28 @@ export function GameCard({ game, variant = "default" }: GameCardProps) {
         </Link>
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              {game.isFree ? (
-                <span className="text-lg font-bold text-secondary">Free to Play</span>
-              ) : (
-                <>
-                  <span className="text-lg font-bold text-foreground">
-                    ${game.price.toFixed(2)}
-                  </span>
-                  {game.originalPrice && (
-                    <span className="text-sm text-muted-foreground line-through">
-                      ${game.originalPrice.toFixed(2)}
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                {game.isFree ? (
+                  <span className="text-lg font-bold text-secondary">Free to Play</span>
+                ) : (
+                  <>
+                    <span className="text-lg font-bold text-foreground">
+                      ${game.price.toFixed(2)}
                     </span>
-                  )}
-                </>
+                    {game.originalPrice && (
+                      <span className="text-sm text-muted-foreground line-through">
+                        ${game.originalPrice.toFixed(2)}
+                      </span>
+                    )}
+                  </>
+                )}
+              </div>
+              {timeLeft && game.originalPrice && (
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Clock className="h-3 w-3" />
+                  <span>{timeLeft}</span>
+                </div>
               )}
             </div>
             <div className="flex items-center gap-1">
@@ -190,18 +200,42 @@ export function GameCard({ game, variant = "default" }: GameCardProps) {
           <span className="text-xs text-muted-foreground">{game.genre[0]}</span>
         </div>
         <div className="mt-3 flex items-center justify-between">
-          {game.isFree ? (
-            <span className="font-bold text-secondary">Free to Play</span>
-          ) : (
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-foreground">${game.price.toFixed(2)}</span>
-              {game.originalPrice && (
-                <span className="text-sm text-muted-foreground line-through">
-                  ${game.originalPrice.toFixed(2)}
-                </span>
-              )}
+          <div className="flex flex-col gap-0.5">
+            {game.isFree ? (
+              <span className="font-bold text-secondary">Free to Play</span>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-foreground">${game.price.toFixed(2)}</span>
+                {game.originalPrice && (
+                  <span className="text-sm text-muted-foreground line-through">
+                    ${game.originalPrice.toFixed(2)}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+          {timeLeft && game.originalPrice && (
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <Clock className="h-3 w-3" />
+              <span>{timeLeft}</span>
             </div>
           )}
+        </div>
+        <div className="mt-3 flex items-center justify-between">
+          <div className="flex flex-col gap-0.5">
+            {game.isFree ? (
+              <span className="font-bold text-secondary">Free to Play</span>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-foreground">${game.price.toFixed(2)}</span>
+                {game.originalPrice && (
+                  <span className="text-sm text-muted-foreground line-through">
+                    ${game.originalPrice.toFixed(2)}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
           <Button
             size="sm"
             className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
