@@ -1,14 +1,5 @@
 # Potti Games - Game Store
 
-*Automatically synced with your [v0.app](https://v0.app) deployments*
-
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/dineshkarthikeyan176-8626s-projects/v0-potti-games)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/nSKHwW8DQV8)
-
-## Live Demo
-
-**[https://v0-potti-games.vercel.app](https://v0-potti-games.vercel.app)**
-
 ## Overview
 
 Potti Games is a modern game store web application built with Next.js. Browse, discover, and explore a wide variety of games with features including:
@@ -27,7 +18,7 @@ Any changes you make to your deployed app will be automatically pushed to this r
 
 Your project is live at:
 
-**[Potti Games](https://v0-potti-games.vercel.app)**
+**[Potti Games](https://v0-potti-games-pcx4e98rb-dineshkarthikeyan176-8626s-projects.vercel.app/)**
 
 ## Build your app
 
