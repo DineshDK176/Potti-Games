@@ -16,11 +16,11 @@ export default async function HomePage() {
       getNewReleases().catch(() => ({ results: [] })),
     ])
 
-    // Convert RAWG games to our Game type with pricing
-    const featuredGames = (featuredData.results || []).map(convertRawgToGame)
-    const trendingGames = (trendingData.results || []).map(convertRawgToGame)
-    const topRatedGames = (topRatedData.results || []).map(convertRawgToGame)
-    const newReleases = (newReleasesData.results || []).map(convertRawgToGame)
+    // Convert RAWG games to our Game type with pricing (filter out nulls)
+    const featuredGames = (featuredData.results || []).map(convertRawgToGame).filter(Boolean) as NonNullable<ReturnType<typeof convertRawgToGame>>[]
+    const trendingGames = (trendingData.results || []).map(convertRawgToGame).filter(Boolean) as NonNullable<ReturnType<typeof convertRawgToGame>>[]
+    const topRatedGames = (topRatedData.results || []).map(convertRawgToGame).filter(Boolean) as NonNullable<ReturnType<typeof convertRawgToGame>>[]
+    const newReleases = (newReleasesData.results || []).map(convertRawgToGame).filter(Boolean) as NonNullable<ReturnType<typeof convertRawgToGame>>[]
 
     const heroGame = featuredGames[0]
 

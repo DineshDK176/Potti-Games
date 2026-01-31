@@ -3,7 +3,9 @@ import type { RawgGame } from "./rawg"
 import { RawgGameWithPrice } from "./rawg"
 
 // Convert RAWG game to our Game type
-export function convertRawgToGame(rawgGame: RawgGame | RawgGameWithPrice): Game {
+export function convertRawgToGame(rawgGame: RawgGame | RawgGameWithPrice | null | undefined): Game | null {
+  if (!rawgGame) return null
+  
   const price = 'price' in rawgGame ? rawgGame.price : generatePrice(rawgGame)
   const originalPrice = 'originalPrice' in rawgGame ? rawgGame.originalPrice : generateOriginalPrice(rawgGame)
   const isFree = 'isFree' in rawgGame ? rawgGame.isFree : price === 0
@@ -11,22 +13,22 @@ export function convertRawgToGame(rawgGame: RawgGame | RawgGameWithPrice): Game 
 
   return {
     id: String(rawgGame.id),
-    title: rawgGame.name,
-    slug: rawgGame.slug,
+    title: rawgGame.name || "Unknown Game",
+    slug: rawgGame.slug || "unknown",
     coverImage: rawgGame.background_image || "/placeholder.svg",
     screenshots: rawgGame.short_screenshots?.map(s => s.image) || [],
-    description: rawgGame.description_raw || `${rawgGame.name} is an exciting game.`,
+    description: rawgGame.description_raw || `${rawgGame.name || "This"} is an exciting game.`,
     price,
     originalPrice,
-    rating: rawgGame.rating,
-    genre: rawgGame.genres.map(g => g.name),
+    rating: rawgGame.rating || 0,
+    genre: (rawgGame.genres || []).map(g => g.name),
     developer: rawgGame.developers?.[0]?.name || "Unknown Developer",
     publisher: rawgGame.publishers?.[0]?.name || "Unknown Publisher",
-    releaseDate: rawgGame.released,
+    releaseDate: rawgGame.released || "TBD",
     isFeatured: (rawgGame.metacritic || 0) >= 85,
-    isTrending: rawgGame.ratings_count > 1000,
+    isTrending: (rawgGame.ratings_count || 0) > 1000,
     isFree,
-    platforms: rawgGame.platforms.map(p => p.platform.name),
+    platforms: (rawgGame.platforms || []).map(p => p.platform?.name || "Unknown"),
     discountEndsAt,
     metacritic: rawgGame.metacritic || undefined,
   }
