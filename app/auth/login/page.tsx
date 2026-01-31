@@ -38,9 +38,8 @@ export default function LoginPage() {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
     signIn({ email, name })
-
-    router.push("/profile")
     setLoading(false)
+    router.replace("/profile")
   }
 
   return (
