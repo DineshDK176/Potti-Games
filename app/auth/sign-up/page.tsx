@@ -63,18 +63,44 @@ export default function SignUpPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#121212] px-4">
         <div className="w-full max-w-md text-center">
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10">
-            <Check className="h-8 w-8 text-green-500" />
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[#0074e4]/10">
+            <Check className="h-8 w-8 text-[#0074e4]" />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Account created successfully!</h2>
+          <h2 className="text-2xl font-bold text-white mb-2">Check your email</h2>
           <p className="text-[#a0a0a0] mb-6">
-            Your account has been created with email{" "}
+            {"We've sent a verification link to "}
             <span className="text-white font-medium">{email}</span>
-            {". You can now sign in and start exploring games."}
+            {". Please click the link in the email to verify your account and start exploring games."}
+          </p>
+          <p className="text-sm text-[#666] mb-6">
+            {"Didn't receive the email? Check your spam folder or "}
+            <button 
+              type="button"
+              onClick={async () => {
+                setLoading(true)
+                const { error } = await supabase.auth.resend({
+                  type: 'signup',
+                  email,
+                  options: {
+                    emailRedirectTo: `${window.location.origin}/auth/callback`,
+                  }
+                })
+                setLoading(false)
+                if (error) {
+                  setError(error.message)
+                } else {
+                  alert('Verification email resent!')
+                }
+              }}
+              className="text-[#0074e4] hover:underline"
+              disabled={loading}
+            >
+              {loading ? 'Sending...' : 'resend verification email'}
+            </button>
           </p>
           <Link href="/auth/login">
-            <Button className="bg-[#0074e4] text-white hover:bg-[#0066cc]">
-              Sign In Now
+            <Button variant="outline" className="border-[#333] text-white hover:bg-[#2a2a2a] bg-transparent">
+              Back to Sign In
             </Button>
           </Link>
         </div>
