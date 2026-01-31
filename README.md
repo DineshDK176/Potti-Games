@@ -18,6 +18,7 @@ This repository stays in sync with your deployed chats on [v0.app](https://v0.ap
 My project is live at:
 
 **[Potti Games](https://v0-potti-games-pcx4e98rb-dineshkarthikeyan176-8626s-projects.vercel.app/)**
+> [!NOTE] If you want to see the deployed Project you must have to signup in [v0](https://v0-cbe-irl.vercel.app/)
 
 ## Update My app?
 
