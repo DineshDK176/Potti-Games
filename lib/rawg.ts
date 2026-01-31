@@ -1,5 +1,9 @@
 const RAWG_API_KEY = process.env.RAWG_API_KEY
-const BASE_URL = "https://api.rawg.io/api"
+const BASE_URL = "https://api.rawg.io/api" // Declare BASE_URL variable
+
+if (!RAWG_API_KEY || RAWG_API_KEY === 'POTTI_GAMES_API_VAR') {
+  console.error('[v0] RAWG_API_KEY is not set. Please add it to your environment variables in the Vars section.')
+}
 
 export interface RawgGame {
   id: number
@@ -59,8 +63,12 @@ export function generateOriginalPrice(game: RawgGame): number | null {
 }
 
 async function fetchRawg<T>(endpoint: string, params: Record<string, string> = {}): Promise<T> {
+  if (!RAWG_API_KEY || RAWG_API_KEY === 'POTTI_GAMES_API_VAR') {
+    throw new Error('RAWG_API_KEY is not configured. Please add your RAWG API key to the environment variables.')
+  }
+
   const searchParams = new URLSearchParams({
-    key: RAWG_API_KEY || "",
+    key: RAWG_API_KEY,
     ...params,
   })
 
