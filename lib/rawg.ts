@@ -1,9 +1,99 @@
 const RAWG_API_KEY = process.env.RAWG_API_KEY
-const BASE_URL = "https://api.rawg.io/api" // Declare BASE_URL variable
+const BASE_URL = "https://api.rawg.io/api"
 
-if (!RAWG_API_KEY || RAWG_API_KEY === 'POTTI_GAMES_API_VAR') {
-  console.error('[v0] RAWG_API_KEY is not set. Please add it to your environment variables in the Vars section.')
+const API_AVAILABLE = RAWG_API_KEY && RAWG_API_KEY !== 'POTTI_GAMES_API_VAR'
+
+if (!API_AVAILABLE) {
+  console.warn('[v0] RAWG_API_KEY not configured. Using demo data. Set your API key in Vars to use real data.')
 }
+
+// Mock games for demo purposes
+const MOCK_GAMES: RawgGame[] = [
+  {
+    id: 1,
+    slug: "elden-ring",
+    name: "Elden Ring",
+    released: "2022-02-25",
+    background_image: "https://media.rawg.io/media/games/511/511ce4a1e03e318dc3d66dbc5b3d7c43.jpg",
+    rating: 4.4,
+    ratings_count: 5000,
+    metacritic: 96,
+    playtime: 60,
+    genres: [{ id: 1, name: "Action", slug: "action" }],
+    platforms: [{ platform: { id: 1, name: "PC", slug: "pc" } }],
+    stores: [{ store: { id: 1, name: "Steam", slug: "steam" } }],
+  },
+  {
+    id: 2,
+    slug: "baldurs-gate-3",
+    name: "Baldur's Gate 3",
+    released: "2023-08-03",
+    background_image: "https://media.rawg.io/media/games/26d/26d548332195e6417ba57b92bff57f69b.jpg",
+    rating: 4.6,
+    ratings_count: 4500,
+    metacritic: 95,
+    playtime: 100,
+    genres: [{ id: 2, name: "RPG", slug: "role-playing-games-rpg" }],
+    platforms: [{ platform: { id: 1, name: "PC", slug: "pc" } }],
+    stores: [{ store: { id: 1, name: "Steam", slug: "steam" } }],
+  },
+  {
+    id: 3,
+    slug: "starfield",
+    name: "Starfield",
+    released: "2023-09-06",
+    background_image: "https://media.rawg.io/media/games/2f3/2f3e9b3e9f0e0e0e0e0e0e0e0e0e0e0e.jpg",
+    rating: 4.0,
+    ratings_count: 3000,
+    metacritic: 83,
+    playtime: 80,
+    genres: [{ id: 2, name: "RPG", slug: "role-playing-games-rpg" }],
+    platforms: [{ platform: { id: 1, name: "PC", slug: "pc" } }],
+    stores: [{ store: { id: 1, name: "Steam", slug: "steam" } }],
+  },
+  {
+    id: 4,
+    slug: "cyberpunk-2077",
+    name: "Cyberpunk 2077",
+    released: "2020-12-10",
+    background_image: "https://media.rawg.io/media/games/4a6/4a6f521f61df9ff0e02762c7408e26b0.jpg",
+    rating: 3.8,
+    ratings_count: 2500,
+    metacritic: 78,
+    playtime: 50,
+    genres: [{ id: 1, name: "Action", slug: "action" }],
+    platforms: [{ platform: { id: 1, name: "PC", slug: "pc" } }],
+    stores: [{ store: { id: 1, name: "Steam", slug: "steam" } }],
+  },
+  {
+    id: 5,
+    slug: "the-legend-of-zelda-tears-of-the-kingdom",
+    name: "The Legend of Zelda: Tears of the Kingdom",
+    released: "2023-05-12",
+    background_image: "https://media.rawg.io/media/games/e9f/e9f0e0e0e0e0e0e0e0e0e0e0e0e0e0e0.jpg",
+    rating: 4.5,
+    ratings_count: 3500,
+    metacritic: 96,
+    playtime: 70,
+    genres: [{ id: 2, name: "RPG", slug: "role-playing-games-rpg" }],
+    platforms: [{ platform: { id: 2, name: "Nintendo Switch", slug: "nintendo-switch" } }],
+    stores: [{ store: { id: 2, name: "Nintendo Store", slug: "nintendo" } }],
+  },
+  {
+    id: 6,
+    slug: "helldivers-2",
+    name: "Helldivers 2",
+    released: "2024-02-08",
+    background_image: "https://media.rawg.io/media/games/8b2/8b2f8b2f8b2f8b2f8b2f8b2f8b2f8b2f.jpg",
+    rating: 4.2,
+    ratings_count: 2000,
+    metacritic: 84,
+    playtime: 40,
+    genres: [{ id: 1, name: "Action", slug: "action" }],
+    platforms: [{ platform: { id: 1, name: "PC", slug: "pc" } }],
+    stores: [{ store: { id: 1, name: "Steam", slug: "steam" } }],
+  },
+]
 
 export interface RawgGame {
   id: number
@@ -63,8 +153,8 @@ export function generateOriginalPrice(game: RawgGame): number | null {
 }
 
 async function fetchRawg<T>(endpoint: string, params: Record<string, string> = {}): Promise<T> {
-  if (!RAWG_API_KEY || RAWG_API_KEY === 'POTTI_GAMES_API_VAR') {
-    throw new Error('RAWG_API_KEY is not configured. Please add your RAWG API key to the environment variables.')
+  if (!API_AVAILABLE) {
+    throw new Error('API not available')
   }
 
   const searchParams = new URLSearchParams({
@@ -73,7 +163,7 @@ async function fetchRawg<T>(endpoint: string, params: Record<string, string> = {
   })
 
   const response = await fetch(`${BASE_URL}${endpoint}?${searchParams}`, {
-    next: { revalidate: 3600 }, // Cache for 1 hour
+    next: { revalidate: 3600 },
   })
 
   if (!response.ok) {
@@ -91,6 +181,10 @@ export async function getGames(params: {
   ordering?: string
   metacritic?: string
 }): Promise<RawgResponse> {
+  if (!API_AVAILABLE) {
+    return { count: MOCK_GAMES.length, next: null, previous: null, results: MOCK_GAMES }
+  }
+  
   const queryParams: Record<string, string> = {
     page: String(params.page || 1),
     page_size: String(params.page_size || 20),
@@ -105,6 +199,9 @@ export async function getGames(params: {
 }
 
 export async function getFeaturedGames(): Promise<RawgResponse> {
+  if (!API_AVAILABLE) {
+    return { count: MOCK_GAMES.length, next: null, previous: null, results: MOCK_GAMES.slice(0, 6) }
+  }
   return fetchRawg<RawgResponse>("/games", {
     page_size: "6",
     ordering: "-rating",
@@ -113,6 +210,10 @@ export async function getFeaturedGames(): Promise<RawgResponse> {
 }
 
 export async function getTrendingGames(): Promise<RawgResponse> {
+  if (!API_AVAILABLE) {
+    return { count: MOCK_GAMES.length, next: null, previous: null, results: MOCK_GAMES.slice(0, 8) }
+  }
+  
   const today = new Date()
   const lastMonth = new Date(today.setMonth(today.getMonth() - 3))
   const dateString = lastMonth.toISOString().split("T")[0]
@@ -125,6 +226,10 @@ export async function getTrendingGames(): Promise<RawgResponse> {
 }
 
 export async function getNewReleases(): Promise<RawgResponse> {
+  if (!API_AVAILABLE) {
+    return { count: MOCK_GAMES.length, next: null, previous: null, results: MOCK_GAMES.slice(0, 8) }
+  }
+  
   const today = new Date()
   const lastMonth = new Date(today.setMonth(today.getMonth() - 1))
   const dateString = lastMonth.toISOString().split("T")[0]
@@ -137,6 +242,10 @@ export async function getNewReleases(): Promise<RawgResponse> {
 }
 
 export async function getTopRatedGames(): Promise<RawgResponse> {
+  if (!API_AVAILABLE) {
+    return { count: MOCK_GAMES.length, next: null, previous: null, results: MOCK_GAMES.slice(0, 6) }
+  }
+  
   return fetchRawg<RawgResponse>("/games", {
     page_size: "8",
     ordering: "-metacritic",
@@ -145,18 +254,51 @@ export async function getTopRatedGames(): Promise<RawgResponse> {
 }
 
 export async function getGameBySlug(slug: string): Promise<GameDetails> {
+  if (!API_AVAILABLE) {
+    const game = MOCK_GAMES.find(g => g.slug === slug) || MOCK_GAMES[0]
+    return {
+      ...game,
+      description_raw: "This is a demo game store experience. To see real game data with thousands of titles, configure your RAWG API key in the Vars section.",
+      developers: [{ id: 1, name: "Demo Studio", slug: "demo-studio" }],
+      publishers: [{ id: 1, name: "Demo Publisher", slug: "demo-publisher" }],
+      website: "https://example.com",
+    } as GameDetails
+  }
+  
   return fetchRawg<GameDetails>(`/games/${slug}`)
 }
 
 export async function getGameScreenshots(slug: string): Promise<{ results: { id: number; image: string }[] }> {
+  if (!API_AVAILABLE) {
+    return { results: [] }
+  }
+  
   return fetchRawg<{ results: { id: number; image: string }[] }>(`/games/${slug}/screenshots`)
 }
 
 export async function getGenres(): Promise<{ results: { id: number; name: string; slug: string; image_background: string }[] }> {
+  if (!API_AVAILABLE) {
+    return {
+      results: [
+        { id: 1, name: "Action", slug: "action", image_background: "" },
+        { id: 2, name: "RPG", slug: "role-playing-games-rpg", image_background: "" },
+        { id: 3, name: "Adventure", slug: "adventure", image_background: "" },
+      ],
+    }
+  }
+  
   return fetchRawg("/genres", { page_size: "20" })
 }
 
 export async function searchGames(query: string): Promise<RawgResponse> {
+  if (!API_AVAILABLE) {
+    const results = MOCK_GAMES.filter(g => 
+      g.name.toLowerCase().includes(query.toLowerCase()) ||
+      g.genres.some(g => g.name.toLowerCase().includes(query.toLowerCase()))
+    )
+    return { count: results.length, next: null, previous: null, results }
+  }
+  
   return fetchRawg<RawgResponse>("/games", {
     search: query,
     page_size: "20",
