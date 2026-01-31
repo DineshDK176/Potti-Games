@@ -12,17 +12,16 @@ Potti Games is a modern game store web application built with Next.js. Browse, d
 - Responsive design for all devices
 
 This repository stays in sync with your deployed chats on [v0.app](https://v0.app).
-Any changes you make to your deployed app will be automatically pushed to this repository.
 
 ## Deployment
 
-Your project is live at:
+My project is live at:
 
 **[Potti Games](https://v0-potti-games-pcx4e98rb-dineshkarthikeyan176-8626s-projects.vercel.app/)**
 
-## Build your app
+## Update My app?
 
-Continue building your app on:
+Continue update my app on:
 
 **[https://v0.app/chat/nSKHwW8DQV8](https://v0.app/chat/nSKHwW8DQV8)**
 
