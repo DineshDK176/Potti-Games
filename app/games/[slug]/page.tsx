@@ -14,11 +14,11 @@ export async function generateMetadata({
   try {
     const game = await getGameBySlug(slug)
     return {
-      title: `${game.name} - PlayVault Store`,
-      description: game.description_raw?.slice(0, 160) || `Buy ${game.name} on PlayVault Store`,
+      title: `${game.name} - Potti Game`,
+      description: game.description_raw?.slice(0, 160) || `Buy ${game.name} on Potti Game`,
     }
   } catch {
-    return { title: "Game Not Found - PlayVault" }
+    return { title: "Game Not Found - Potti Game" }
   }
 }
 

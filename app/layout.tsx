@@ -7,7 +7,7 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
 export const metadata: Metadata = {
-  title: "PlayVault Store",
+  title: "Potti Game",
   description:
     "Download and play the best PC games. Discover new releases, trending titles, and exclusive deals.",
   generator: "v0.app",

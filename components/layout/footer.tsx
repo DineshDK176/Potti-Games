@@ -33,7 +33,7 @@ export function Footer() {
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0074e4]">
                 <Gamepad2 className="h-5 w-5 text-white" />
               </div>
-              <span className="text-lg font-bold text-white">PlayVault</span>
+              <span className="text-lg font-bold text-white">Potti Game</span>
             </Link>
             <p className="mt-4 text-sm text-[#666] leading-relaxed">
               Your ultimate destination for discovering and playing amazing games. 
@@ -102,7 +102,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[#333] pt-8 md:flex-row">
           <p className="text-xs text-[#666]">
-            2026 PlayVault Store. All rights reserved. Game data provided by RAWG.
+            2026 Potti Game. All rights reserved. Game data provided by RAWG.
           </p>
           <div className="flex items-center gap-6">
             <Link href="#" className="text-xs text-[#666] hover:text-white transition-colors">

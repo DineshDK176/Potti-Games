@@ -50,7 +50,7 @@ export default function LoginPage() {
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#0074e4]">
               <Gamepad2 className="h-6 w-6 text-white" />
             </div>
-            <span className="text-xl font-bold text-white">PlayVault</span>
+            <span className="text-xl font-bold text-white">Potti Game</span>
           </Link>
 
           <div>
@@ -134,7 +134,7 @@ export default function LoginPage() {
         <div className="absolute inset-0 bg-gradient-to-br from-[#0074e4] to-[#0a3d6e]">
           <div className="flex h-full flex-col items-center justify-center p-12 text-white">
             <Gamepad2 className="h-24 w-24 mb-8 opacity-20" />
-            <h3 className="text-3xl font-bold text-center mb-4">Welcome to PlayVault</h3>
+            <h3 className="text-3xl font-bold text-center mb-4">Welcome to Potti Game</h3>
             <p className="text-lg text-center text-white/70 max-w-md">
               Your ultimate destination for the best games. Discover, collect, and play thousands of titles.
             </p>

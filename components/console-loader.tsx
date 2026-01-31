@@ -7,7 +7,7 @@ export function ConsoleLoader() {
   const [currentLine, setCurrentLine] = useState(0)
 
   const bootSequence = [
-    "Initializing PlayVault Store...",
+    "Initializing Potti Game Store...",
     "Loading game database...",
     "Connecting to servers...",
     "Authenticating session...",
@@ -37,7 +37,7 @@ export function ConsoleLoader() {
             <div className="h-3 w-3 rounded-full bg-[#ffbd2e]" />
             <div className="h-3 w-3 rounded-full bg-[#27ca40]" />
           </div>
-          <span className="ml-4 font-mono text-xs text-[#666]">playvault-boot-sequence</span>
+          <span className="ml-4 font-mono text-xs text-[#666]">potti-game-boot-sequence</span>
         </div>
 
         {/* Console Body */}
@@ -46,12 +46,12 @@ export function ConsoleLoader() {
           <div className="mb-6 text-[#0074e4]">
             <pre className="text-xs leading-tight">
 {`
-  ██████╗ ██╗      █████╗ ██╗   ██╗██╗   ██╗ █████╗ ██╗   ██╗██╗  ████████╗
-  ██╔══██╗██║     ██╔══██╗╚██╗ ██╔╝██║   ██║██╔══██╗██║   ██║██║  ╚══██╔══╝
-  ██████╔╝██║     ███████║ ╚████╔╝ ██║   ██║███████║██║   ██║██║     ██║   
-  ██╔═══╝ ██║     ██╔══██║  ╚██╔╝  ╚██╗ ██╔╝██╔══██║██║   ██║██║     ██║   
-  ██║     ███████╗██║  ██║   ██║    ╚████╔╝ ██║  ██║╚██████╔╝███████╗██║   
-  ╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝     ╚═══╝  ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝   
+  ██████╗  ██████╗ ████████╗████████╗██╗     ██████╗  █████╗ ███╗   ███╗███████╗
+  ██╔══██╗██╔═══██╗╚══██╔══╝╚══██╔══╝██║    ██╔════╝ ██╔══██╗████╗ ████║██╔════╝
+  ██████╔╝██║   ██║   ██║      ██║   ██║    ██║  ███╗███████║██╔████╔██║█████╗  
+  ██╔═══╝ ██║   ██║   ██║      ██║   ██║    ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝  
+  ██║     ╚██████╔╝   ██║      ██║   ██║    ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗
+  ╚═╝      ╚═════╝    ╚═╝      ╚═╝   ╚═╝     ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
 `}
             </pre>
           </div>

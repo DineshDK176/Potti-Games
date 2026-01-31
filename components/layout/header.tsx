@@ -67,7 +67,7 @@ export function Header() {
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0074e4]">
             <Gamepad2 className="h-5 w-5 text-white" />
           </div>
-          <span className="text-lg font-bold text-white">PlayVault</span>
+          <span className="text-lg font-bold text-white">Potti Game</span>
         </Link>
 
         {/* Desktop Navigation */}

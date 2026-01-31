@@ -191,7 +191,7 @@ export default function CartPage() {
                     </Button>
 
                     <p className="mt-4 text-center text-xs text-muted-foreground">
-                      Secure checkout powered by PlayVault
+                      Secure checkout powered by Potti Game
                     </p>
                   </CardContent>
                 </Card>

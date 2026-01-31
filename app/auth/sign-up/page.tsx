@@ -89,7 +89,7 @@ export default function SignUpPage() {
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#0074e4]">
               <Gamepad2 className="h-6 w-6 text-white" />
             </div>
-            <span className="text-xl font-bold text-white">PlayVault</span>
+            <span className="text-xl font-bold text-white">Potti Game</span>
           </Link>
 
           <div>
@@ -196,7 +196,7 @@ export default function SignUpPage() {
         <div className="absolute inset-0 bg-gradient-to-br from-[#0074e4] to-[#0a3d6e]">
           <div className="flex h-full flex-col items-center justify-center p-12 text-white">
             <Gamepad2 className="h-24 w-24 mb-8 opacity-20" />
-            <h3 className="text-3xl font-bold text-center mb-4">Join PlayVault</h3>
+            <h3 className="text-3xl font-bold text-center mb-4">Join Potti Game</h3>
             <p className="text-lg text-center text-white/70 max-w-md">
               Create your free account and get access to thousands of amazing games, exclusive deals, and more.
             </p>
