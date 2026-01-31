@@ -17,10 +17,10 @@ export default async function HomePage() {
     ])
 
     // Convert RAWG games to our Game type with pricing
-    const featuredGames = featuredData.results.map(convertRawgToGame)
-    const trendingGames = trendingData.results.map(convertRawgToGame)
-    const topRatedGames = topRatedData.results.map(convertRawgToGame)
-    const newReleases = newReleasesData.results.map(convertRawgToGame)
+    const featuredGames = (featuredData.results || []).map(convertRawgToGame)
+    const trendingGames = (trendingData.results || []).map(convertRawgToGame)
+    const topRatedGames = (topRatedData.results || []).map(convertRawgToGame)
+    const newReleases = (newReleasesData.results || []).map(convertRawgToGame)
 
     const heroGame = featuredGames[0]
 
