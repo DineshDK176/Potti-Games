@@ -5,6 +5,7 @@ import { GameGrid } from "@/components/home/game-grid"
 import { TrendingSection } from "@/components/home/trending-section"
 import { getFeaturedGames, getTrendingGames, getTopRatedGames, getNewReleases } from "@/lib/rawg"
 
+// Rebuild cache
 export default async function HomePage() {
   const [featuredData, trendingData, topRatedData, newReleasesData] = await Promise.all([
     getFeaturedGames(),
