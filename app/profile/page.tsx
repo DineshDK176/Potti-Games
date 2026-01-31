@@ -1,15 +1,24 @@
-import { redirect } from "next/navigation"
-import { createClient } from "@/lib/supabase/server"
+"use client"
+
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { useUser } from "@/hooks/use-store"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { ProfileContent } from "@/components/profile-content"
 
-export default async function ProfilePage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+export default function ProfilePage() {
+  const { user, isSignedIn } = useUser()
+  const router = useRouter()
 
-  if (!user) {
-    redirect("/auth/login")
+  useEffect(() => {
+    if (!isSignedIn) {
+      router.push("/auth/login")
+    }
+  }, [isSignedIn, router])
+
+  if (!isSignedIn || !user) {
+    return null
   }
 
   return (

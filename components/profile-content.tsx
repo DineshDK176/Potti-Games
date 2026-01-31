@@ -3,8 +3,7 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { useWishlist, useCart } from "@/hooks/use-store"
-import { createClient } from "@/lib/supabase/client"
+import { useWishlist, useCart, useUser, UserProfile } from "@/hooks/use-store"
 import {
   User,
   Heart,
@@ -14,28 +13,25 @@ import {
   ChevronRight,
   Mail,
   Calendar,
-  Shield,
 } from "lucide-react"
-import type { User as SupabaseUser } from "@supabase/supabase-js"
 
 interface ProfileContentProps {
-  user: SupabaseUser
+  user: UserProfile
 }
 
 export function ProfileContent({ user }: ProfileContentProps) {
   const router = useRouter()
   const { wishlist } = useWishlist()
   const { cart } = useCart()
-  const supabase = createClient()
+  const { signOut } = useUser()
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
+  const handleSignOut = () => {
+    signOut()
     router.push("/")
-    router.refresh()
   }
 
-  const memberSince = user.created_at 
-    ? new Date(user.created_at).toLocaleDateString("en-US", {
+  const memberSince = user.createdAt 
+    ? new Date(user.createdAt).toLocaleDateString("en-US", {
         month: "long",
         year: "numeric",
       })
@@ -48,13 +44,13 @@ export function ProfileContent({ user }: ProfileContentProps) {
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
           {/* Avatar */}
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#0074e4] text-3xl font-bold text-white sm:h-24 sm:w-24">
-            {user.email?.charAt(0).toUpperCase()}
+            {user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()}
           </div>
 
           {/* User Info */}
           <div className="flex-1 text-center sm:text-left">
             <h1 className="text-2xl font-bold text-white">
-              {user.user_metadata?.full_name || user.email?.split("@")[0] || "Player"}
+              {user.name || "Player"}
             </h1>
             <p className="mt-1 text-[#a0a0a0]">{user.email}</p>
             <div className="mt-4 flex flex-wrap justify-center gap-3 sm:justify-start">
@@ -62,12 +58,6 @@ export function ProfileContent({ user }: ProfileContentProps) {
                 <Calendar className="h-4 w-4" />
                 Member since {memberSince}
               </div>
-              {user.email_confirmed_at && (
-                <div className="flex items-center gap-1 rounded bg-[#10b981]/10 px-3 py-1 text-sm text-[#10b981]">
-                  <Shield className="h-4 w-4" />
-                  Verified
-                </div>
-              )}
             </div>
           </div>
 
@@ -133,6 +123,19 @@ export function ProfileContent({ user }: ProfileContentProps) {
           <div className="flex items-center justify-between rounded-lg bg-[#1a1a1a] p-4 transition-colors hover:bg-[#2a2a2a] cursor-pointer">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#2a2a2a]">
+                <User className="h-5 w-5 text-[#a0a0a0]" />
+              </div>
+              <div>
+                <p className="font-medium text-white">Display Name</p>
+                <p className="text-sm text-[#666]">{user.name}</p>
+              </div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-[#666]" />
+          </div>
+
+          <div className="flex items-center justify-between rounded-lg bg-[#1a1a1a] p-4 transition-colors hover:bg-[#2a2a2a] cursor-pointer">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#2a2a2a]">
                 <Mail className="h-5 w-5 text-[#a0a0a0]" />
               </div>
               <div>
@@ -151,19 +154,6 @@ export function ProfileContent({ user }: ProfileContentProps) {
               <div>
                 <p className="font-medium text-white">Preferences</p>
                 <p className="text-sm text-[#666]">Notifications, language, and display</p>
-              </div>
-            </div>
-            <ChevronRight className="h-5 w-5 text-[#666]" />
-          </div>
-
-          <div className="flex items-center justify-between rounded-lg bg-[#1a1a1a] p-4 transition-colors hover:bg-[#2a2a2a] cursor-pointer">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#2a2a2a]">
-                <Shield className="h-5 w-5 text-[#a0a0a0]" />
-              </div>
-              <div>
-                <p className="font-medium text-white">Security</p>
-                <p className="text-sm text-[#666]">Password and authentication</p>
               </div>
             </div>
             <ChevronRight className="h-5 w-5 text-[#666]" />
