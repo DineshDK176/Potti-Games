@@ -42,7 +42,10 @@ export default function SignUpPage() {
       email,
       password,
       options: {
-        emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/`,
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        data: {
+          email_confirmed: true,
+        },
       },
     })
 
@@ -63,15 +66,15 @@ export default function SignUpPage() {
           <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10">
             <Check className="h-8 w-8 text-green-500" />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Check your email</h2>
+          <h2 className="text-2xl font-bold text-white mb-2">Account created successfully!</h2>
           <p className="text-[#a0a0a0] mb-6">
-            {"We've sent a confirmation link to "}
+            Your account has been created with email{" "}
             <span className="text-white font-medium">{email}</span>
-            {". Click the link to activate your account."}
+            {". You can now sign in and start exploring games."}
           </p>
           <Link href="/auth/login">
             <Button className="bg-[#0074e4] text-white hover:bg-[#0066cc]">
-              Back to Sign In
+              Sign In Now
             </Button>
           </Link>
         </div>
