@@ -1,9 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { useState, useEffect } from "react"
-import { useCart, useWishlist } from "@/hooks/use-store"
-import { createClient } from "@/lib/supabase/client"
+import { useState } from "react"
+import { useCart, useWishlist, useUser } from "@/hooks/use-store"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -25,7 +24,6 @@ import {
   ChevronDown,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import type { User as SupabaseUser } from "@supabase/supabase-js"
 
 const navLinks = [
   { href: "/", label: "Discover" },
@@ -35,28 +33,12 @@ const navLinks = [
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [user, setUser] = useState<SupabaseUser | null>(null)
+  const { user, isSignedIn, signOut } = useUser()
   const { cartCount } = useCart()
   const { wishlist } = useWishlist()
-  const supabase = createClient()
 
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-    }
-    getUser()
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [supabase.auth])
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    setUser(null)
+  const handleSignOut = () => {
+    signOut()
   }
 
   return (
@@ -120,19 +102,20 @@ export function Header() {
           
           <div className="h-6 w-px bg-[#333]" />
 
-          {user ? (
+          {isSignedIn && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center gap-2 rounded-lg px-3 py-2 text-[#a0a0a0] hover:text-white hover:bg-[#2a2a2a]">
                   <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0074e4] text-xs font-bold text-white">
-                    {user.email?.charAt(0).toUpperCase()}
+                    {user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()}
                   </div>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 bg-[#1a1a1a] border-[#333]">
                 <div className="px-3 py-2">
-                  <p className="text-sm font-medium text-white">{user.email}</p>
+                  <p className="text-sm font-medium text-white">{user.name}</p>
+                  <p className="text-xs text-[#666]">{user.email}</p>
                 </div>
                 <DropdownMenuSeparator className="bg-[#333]" />
                 <DropdownMenuItem asChild>
@@ -230,7 +213,7 @@ export function Header() {
             )}
           </Link>
           
-          {user ? (
+          {isSignedIn && user ? (
             <>
               <Link
                 href="/profile"

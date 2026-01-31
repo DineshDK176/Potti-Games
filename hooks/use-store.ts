@@ -5,6 +5,20 @@ import { CartItem, Game } from "@/lib/types"
 
 const CART_KEY = "game-store-cart"
 const WISHLIST_KEY = "game-store-wishlist"
+const USER_KEY = "game-store-user"
+
+export interface UserProfile {
+  id: string
+  email: string
+  name: string
+  createdAt: string
+}
+
+function getStoredUser(): UserProfile | null {
+  if (typeof window === "undefined") return null
+  const stored = localStorage.getItem(USER_KEY)
+  return stored ? JSON.parse(stored) : null
+}
 
 function getStoredCart(): CartItem[] {
   if (typeof window === "undefined") return []
@@ -111,5 +125,43 @@ export function useWishlist() {
     removeFromWishlist,
     toggleWishlist,
     isInWishlist,
+  }
+}
+
+export function useUser() {
+  const { data: user, mutate } = useSWR<UserProfile | null>("user", getStoredUser, {
+    fallbackData: null,
+  })
+
+  const signIn = (profile: Omit<UserProfile, "id" | "createdAt">) => {
+    const newUser: UserProfile = {
+      id: crypto.randomUUID(),
+      email: profile.email,
+      name: profile.name,
+      createdAt: new Date().toISOString(),
+    }
+    localStorage.setItem(USER_KEY, JSON.stringify(newUser))
+    mutate(newUser)
+    return newUser
+  }
+
+  const signOut = () => {
+    localStorage.removeItem(USER_KEY)
+    mutate(null)
+  }
+
+  const updateUser = (updates: Partial<Pick<UserProfile, "name" | "email">>) => {
+    if (!user) return
+    const updatedUser = { ...user, ...updates }
+    localStorage.setItem(USER_KEY, JSON.stringify(updatedUser))
+    mutate(updatedUser)
+  }
+
+  return {
+    user,
+    isSignedIn: !!user,
+    signIn,
+    signOut,
+    updateUser,
   }
 }
