@@ -3,81 +3,90 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ChevronRight, Star, TrendingUp } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Game } from "@/lib/types"
+import { RawgGame, generatePrice } from "@/lib/rawg"
 
 interface TrendingSectionProps {
-  games: Game[]
+  games: RawgGame[]
 }
 
 export function TrendingSection({ games }: TrendingSectionProps) {
   return (
-    <section className="bg-gradient-to-br from-muted/50 to-muted py-12">
+    <section className="bg-[#0a0a0a] py-12 border-t border-[#333]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
-              <TrendingUp className="h-5 w-5 text-primary-foreground" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#0074e4]">
+              <TrendingUp className="h-5 w-5 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-foreground sm:text-3xl">Top Trends</h2>
+            <h2 className="text-xl font-bold text-white">Trending Now</h2>
           </div>
           <Link
-            href="/games?sort=trending"
-            className="flex items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary/80"
+            href="/games?ordering=-added"
+            className="flex items-center gap-1 text-sm text-[#a0a0a0] hover:text-white transition-colors"
           >
             View All
             <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {games.slice(0, 6).map((game, index) => (
-            <Link
-              key={game.id}
-              href={`/games/${game.slug}`}
-              className="group relative flex items-center gap-4 rounded-2xl bg-card p-4 shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-            >
-              {/* Rank Badge */}
-              <div className="absolute -left-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground shadow-lg">
-                #{index + 1}
-              </div>
-
-              {/* Game Image */}
-              <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl">
-                <Image
-                  src={game.coverImage || "/placeholder.svg"}
-                  alt={game.title}
-                  fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-110"
-                />
-              </div>
-
-              {/* Game Info */}
-              <div className="min-w-0 flex-1">
-                <h3 className="truncate font-semibold text-foreground transition-colors group-hover:text-primary">
-                  {game.title}
-                </h3>
-                <div className="mt-1 flex items-center gap-2">
-                  <div className="flex items-center gap-1">
-                    <Star className="h-3 w-3 fill-accent text-accent" />
-                    <span className="text-xs text-muted-foreground">{game.rating}</span>
-                  </div>
-                  <Badge variant="secondary" className="rounded-full text-xs">
-                    {game.genre[0]}
-                  </Badge>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {games.slice(0, 8).map((game, index) => {
+            const price = generatePrice(game)
+            
+            return (
+              <Link
+                key={game.id}
+                href={`/games/${game.slug}`}
+                className="group relative flex items-center gap-3 rounded-lg bg-[#1a1a1a] p-3 transition-all duration-300 hover:bg-[#2a2a2a]"
+              >
+                {/* Rank Badge */}
+                <div className="absolute -left-1 -top-1 flex h-6 w-6 items-center justify-center rounded bg-[#0074e4] text-xs font-bold text-white shadow-lg">
+                  {index + 1}
                 </div>
-                <div className="mt-2">
-                  {game.isFree ? (
-                    <span className="text-sm font-bold text-secondary">Free</span>
+
+                {/* Game Image */}
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded">
+                  {game.background_image ? (
+                    <Image
+                      src={game.background_image || "/placeholder.svg"}
+                      alt={game.name}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-110"
+                    />
                   ) : (
-                    <span className="text-sm font-bold text-foreground">
-                      ${game.price.toFixed(2)}
-                    </span>
+                    <div className="flex h-full w-full items-center justify-center bg-[#2a2a2a] text-[#666]">
+                      ?
+                    </div>
                   )}
                 </div>
-              </div>
-            </Link>
-          ))}
+
+                {/* Game Info */}
+                <div className="min-w-0 flex-1">
+                  <h3 className="truncate text-sm font-medium text-white group-hover:text-[#0074e4] transition-colors">
+                    {game.name}
+                  </h3>
+                  <div className="mt-1 flex items-center gap-2">
+                    {game.rating > 0 && (
+                      <div className="flex items-center gap-0.5">
+                        <Star className="h-3 w-3 fill-[#f59e0b] text-[#f59e0b]" />
+                        <span className="text-xs text-[#a0a0a0]">{game.rating.toFixed(1)}</span>
+                      </div>
+                    )}
+                    {game.genres?.[0] && (
+                      <span className="text-xs text-[#666]">{game.genres[0].name}</span>
+                    )}
+                  </div>
+                  <div className="mt-1">
+                    {price === 0 ? (
+                      <span className="text-xs font-medium text-[#10b981]">Free</span>
+                    ) : (
+                      <span className="text-xs font-medium text-white">${price.toFixed(2)}</span>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            )
+          })}
         </div>
       </div>
     </section>

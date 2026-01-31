@@ -1,3 +1,5 @@
+import { ConsoleLoader } from "@/components/console-loader"
+
 export default function Loading() {
-  return null
+  return <ConsoleLoader />
 }

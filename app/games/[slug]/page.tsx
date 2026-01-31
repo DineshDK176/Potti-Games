@@ -1,14 +1,8 @@
 import { notFound } from "next/navigation"
-import { getGameBySlug, games } from "@/lib/data"
+import { getGameBySlug, getGameScreenshots } from "@/lib/rawg"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { GameDetailsContent } from "@/components/game-details-content"
-
-export function generateStaticParams() {
-  return games.map((game) => ({
-    slug: game.slug,
-  }))
-}
 
 export async function generateMetadata({
   params,
@@ -16,12 +10,15 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const game = getGameBySlug(slug)
-  if (!game) return { title: "Game Not Found" }
-
-  return {
-    title: `${game.title} - PlayVault`,
-    description: game.description,
+  
+  try {
+    const game = await getGameBySlug(slug)
+    return {
+      title: `${game.name} - PlayVault Store`,
+      description: game.description_raw?.slice(0, 160) || `Buy ${game.name} on PlayVault Store`,
+    }
+  } catch {
+    return { title: "Game Not Found - PlayVault" }
   }
 }
 
@@ -31,19 +28,25 @@ export default async function GameDetailsPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const game = getGameBySlug(slug)
+  
+  try {
+    const [game, screenshotsData] = await Promise.all([
+      getGameBySlug(slug),
+      getGameScreenshots(slug),
+    ])
 
-  if (!game) {
+    const screenshots = screenshotsData.results.map(s => s.image)
+
+    return (
+      <div className="flex min-h-screen flex-col bg-[#121212]">
+        <Header />
+        <main className="flex-1">
+          <GameDetailsContent game={game} screenshots={screenshots} />
+        </main>
+        <Footer />
+      </div>
+    )
+  } catch {
     notFound()
   }
-
-  return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
-      <main className="flex-1">
-        <GameDetailsContent game={game} />
-      </main>
-      <Footer />
-    </div>
-  )
 }

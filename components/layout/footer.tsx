@@ -4,45 +4,46 @@ import { Gamepad2 } from "lucide-react"
 const footerLinks = {
   browse: [
     { label: "All Games", href: "/games" },
-    { label: "Free Games", href: "/games?filter=free" },
-    { label: "Top Trends", href: "/games?sort=trending" },
-    { label: "New Releases", href: "/games?sort=new" },
+    { label: "Top Rated", href: "/games?ordering=-rating" },
+    { label: "New Releases", href: "/games?ordering=-released" },
+    { label: "Trending", href: "/games?ordering=-added" },
   ],
-  support: [
+  resources: [
     { label: "Help Center", href: "#" },
-    { label: "Contact Us", href: "#" },
-    { label: "FAQ", href: "#" },
     { label: "Community", href: "#" },
+    { label: "Blog", href: "#" },
+    { label: "Careers", href: "#" },
   ],
   legal: [
-    { label: "Privacy Policy", href: "#" },
     { label: "Terms of Service", href: "#" },
+    { label: "Privacy Policy", href: "#" },
     { label: "Refund Policy", href: "#" },
+    { label: "Store EULA", href: "#" },
   ],
 }
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-card">
+    <footer className="border-t border-[#333] bg-[#0a0a0a]">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
-                <Gamepad2 className="h-6 w-6 text-primary-foreground" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0074e4]">
+                <Gamepad2 className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-foreground">PlayVault</span>
+              <span className="text-lg font-bold text-white">PlayVault</span>
             </Link>
-            <p className="mt-4 text-sm text-muted-foreground">
-              Your ultimate destination for discovering and downloading amazing games. 
-              From indie gems to AAA blockbusters, we have got you covered.
+            <p className="mt-4 text-sm text-[#666] leading-relaxed">
+              Your ultimate destination for discovering and playing amazing games. 
+              Powered by real game data from the RAWG database.
             </p>
           </div>
 
           {/* Browse Links */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[#666]">
               Browse
             </h3>
             <ul className="mt-4 space-y-2">
@@ -50,7 +51,7 @@ export function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                    className="text-sm text-[#a0a0a0] transition-colors hover:text-white"
                   >
                     {link.label}
                   </Link>
@@ -59,17 +60,17 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Support Links */}
+          {/* Resources Links */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">
-              Support
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[#666]">
+              Resources
             </h3>
             <ul className="mt-4 space-y-2">
-              {footerLinks.support.map((link) => (
+              {footerLinks.resources.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                    className="text-sm text-[#a0a0a0] transition-colors hover:text-white"
                   >
                     {link.label}
                   </Link>
@@ -80,7 +81,7 @@ export function Footer() {
 
           {/* Legal Links */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[#666]">
               Legal
             </h3>
             <ul className="mt-4 space-y-2">
@@ -88,7 +89,7 @@ export function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                    className="text-sm text-[#a0a0a0] transition-colors hover:text-white"
                   >
                     {link.label}
                   </Link>
@@ -99,12 +100,20 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 md:flex-row">
-          <p className="text-sm text-muted-foreground">
-            2026 PlayVault. All rights reserved.
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[#333] pt-8 md:flex-row">
+          <p className="text-xs text-[#666]">
+            2026 PlayVault Store. All rights reserved. Game data provided by RAWG.
           </p>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">Made with care for gamers</span>
+          <div className="flex items-center gap-6">
+            <Link href="#" className="text-xs text-[#666] hover:text-white transition-colors">
+              Facebook
+            </Link>
+            <Link href="#" className="text-xs text-[#666] hover:text-white transition-colors">
+              Twitter
+            </Link>
+            <Link href="#" className="text-xs text-[#666] hover:text-white transition-colors">
+              Discord
+            </Link>
           </div>
         </div>
       </div>

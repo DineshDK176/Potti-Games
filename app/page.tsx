@@ -1,54 +1,55 @@
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { HeroSection } from "@/components/home/hero-section"
-import { GamesSection } from "@/components/home/games-section"
+import { GameGrid } from "@/components/home/game-grid"
 import { TrendingSection } from "@/components/home/trending-section"
-import {
-  getFeaturedGames,
-  getTrendingGames,
-  getFreeGames,
-  getPaidGames,
-} from "@/lib/data"
+import { getFeaturedGames, getTrendingGames, getTopRatedGames, getNewReleases } from "@/lib/rawg"
 
-export default function HomePage() {
-  const featuredGames = getFeaturedGames()
-  const trendingGames = getTrendingGames()
-  const freeGames = getFreeGames()
-  const paidGames = getPaidGames()
+export default async function HomePage() {
+  const [featuredData, trendingData, topRatedData, newReleasesData] = await Promise.all([
+    getFeaturedGames(),
+    getTrendingGames(),
+    getTopRatedGames(),
+    getNewReleases(),
+  ])
+
+  const featuredGames = featuredData.results
+  const trendingGames = trendingData.results
+  const topRatedGames = topRatedData.results
+  const newReleases = newReleasesData.results
 
   const heroGame = featuredGames[0]
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-[#121212]">
       <Header />
       <main className="flex-1">
         {/* Hero Section */}
         {heroGame && <HeroSection game={heroGame} />}
 
         {/* Featured Games */}
-        <GamesSection
-          title="Featured Games"
-          games={featuredGames.slice(0, 4)}
-          href="/games?filter=featured"
-          variant="featured"
+        <GameGrid
+          title="Featured & Recommended"
+          games={featuredGames.slice(1, 7)}
+          href="/games?ordering=-rating"
         />
 
         {/* Trending Section */}
-        <TrendingSection games={trendingGames} />
+        <TrendingSection games={trendingGames.slice(0, 8)} />
 
-        {/* Free Games */}
-        <GamesSection
-          title="Free to Play"
-          games={freeGames.slice(0, 4)}
-          href="/games?filter=free"
+        {/* Top Rated */}
+        <GameGrid
+          title="Top Rated"
+          games={topRatedGames.slice(0, 6)}
+          href="/games?metacritic=85,100"
         />
 
-        {/* Paid Games / Premium */}
-        <div className="bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-          <GamesSection
-            title="Premium Games"
-            games={paidGames.slice(0, 8)}
-            href="/games"
+        {/* New Releases */}
+        <div className="border-t border-[#333]">
+          <GameGrid
+            title="New Releases"
+            games={newReleases.slice(0, 6)}
+            href="/games?ordering=-released"
           />
         </div>
       </main>

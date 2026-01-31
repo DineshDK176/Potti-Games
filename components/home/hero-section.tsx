@@ -3,79 +3,130 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Star, Play, ShoppingCart } from "lucide-react"
+import { Star, Play, ShoppingCart, Calendar } from "lucide-react"
 import { useCart } from "@/hooks/use-store"
-import { Game } from "@/lib/types"
+import { RawgGame, generatePrice, generateOriginalPrice } from "@/lib/rawg"
 
 interface HeroSectionProps {
-  game: Game
+  game: RawgGame
 }
 
 export function HeroSection({ game }: HeroSectionProps) {
   const { addToCart } = useCart()
 
-  const discountPercent = game.originalPrice
-    ? Math.round(((game.originalPrice - game.price) / game.originalPrice) * 100)
-    : 0
+  const price = generatePrice(game)
+  const originalPrice = generateOriginalPrice(game)
+  const discountPercent = originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0
+
+  const handleAddToCart = () => {
+    addToCart({
+      id: String(game.id),
+      title: game.name,
+      slug: game.slug,
+      coverImage: game.background_image,
+      screenshots: game.short_screenshots?.map(s => s.image) || [],
+      description: "",
+      price,
+      originalPrice: originalPrice || undefined,
+      rating: game.rating,
+      genre: game.genres?.map(g => g.name) || [],
+      developer: game.developers?.[0]?.name || "Unknown",
+      publisher: game.publishers?.[0]?.name || "Unknown",
+      releaseDate: game.released || "",
+      isFeatured: true,
+      isTrending: false,
+      isFree: price === 0,
+      platforms: game.platforms?.map(p => p.platform.name) || [],
+    })
+  }
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-secondary/10">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
+    <section className="relative overflow-hidden bg-[#121212]">
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        {game.background_image && (
+          <Image
+            src={game.background_image || "/placeholder.svg"}
+            alt=""
+            fill
+            className="object-cover opacity-30"
+            priority
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#121212] via-[#121212]/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-[#121212]/50" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Content */}
-          <div className="order-2 lg:order-1">
-            <div className="flex items-center gap-2">
-              <Badge className="bg-accent text-accent-foreground">Featured</Badge>
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="rounded bg-[#0074e4] px-3 py-1 text-xs font-bold text-white uppercase tracking-wider">
+                Featured
+              </span>
               {discountPercent > 0 && (
-                <Badge className="bg-primary text-primary-foreground">
-                  {discountPercent}% OFF
-                </Badge>
+                <span className="rounded bg-[#10b981] px-3 py-1 text-xs font-bold text-white">
+                  -{discountPercent}%
+                </span>
               )}
             </div>
-            <h1 className="mt-4 text-balance text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              {game.title}
+            
+            <h1 className="text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
+              {game.name}
             </h1>
-            <p className="mt-4 text-pretty text-lg text-muted-foreground">
-              {game.description.slice(0, 200)}...
-            </p>
-            <div className="mt-6 flex flex-wrap items-center gap-4">
-              <div className="flex items-center gap-1">
-                <Star className="h-5 w-5 fill-accent text-accent" />
-                <span className="font-semibold text-foreground">{game.rating}</span>
-                <span className="text-muted-foreground">rating</span>
-              </div>
+            
+            <div className="mt-4 flex flex-wrap items-center gap-4">
+              {game.rating > 0 && (
+                <div className="flex items-center gap-1">
+                  <Star className="h-5 w-5 fill-[#f59e0b] text-[#f59e0b]" />
+                  <span className="font-semibold text-white">{game.rating.toFixed(1)}</span>
+                </div>
+              )}
+              {game.released && (
+                <div className="flex items-center gap-1 text-[#a0a0a0]">
+                  <Calendar className="h-4 w-4" />
+                  <span className="text-sm">{new Date(game.released).getFullYear()}</span>
+                </div>
+              )}
               <div className="flex flex-wrap gap-2">
-                {game.genre.map((g) => (
-                  <Badge key={g} variant="secondary" className="rounded-full">
-                    {g}
-                  </Badge>
+                {game.genres?.slice(0, 3).map((g) => (
+                  <span key={g.id} className="rounded-full bg-[#2a2a2a] px-3 py-1 text-xs text-[#a0a0a0]">
+                    {g.name}
+                  </span>
                 ))}
               </div>
             </div>
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <div className="flex items-baseline gap-2">
-                {game.isFree ? (
-                  <span className="text-3xl font-bold text-secondary">Free to Play</span>
-                ) : (
-                  <>
-                    <span className="text-3xl font-bold text-foreground">
-                      ${game.price.toFixed(2)}
-                    </span>
-                    {game.originalPrice && (
-                      <span className="text-xl text-muted-foreground line-through">
-                        ${game.originalPrice.toFixed(2)}
-                      </span>
-                    )}
-                  </>
-                )}
-              </div>
+
+            {/* Platforms */}
+            <div className="mt-4 flex items-center gap-2 text-[#666]">
+              {game.platforms?.slice(0, 4).map((p) => (
+                <span key={p.platform.id} className="text-xs">
+                  {p.platform.name}
+                </span>
+              ))}
             </div>
+
+            {/* Price */}
+            <div className="mt-8 flex items-center gap-4">
+              {price === 0 ? (
+                <span className="text-3xl font-bold text-[#10b981]">Free to Play</span>
+              ) : (
+                <div className="flex items-baseline gap-3">
+                  <span className="text-3xl font-bold text-white">${price.toFixed(2)}</span>
+                  {originalPrice && (
+                    <span className="text-xl text-[#666] line-through">${originalPrice.toFixed(2)}</span>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Actions */}
             <div className="mt-6 flex flex-wrap gap-3">
               <Button
                 size="lg"
-                className="rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:bg-primary/90"
-                onClick={() => addToCart(game)}
+                className="rounded bg-[#0074e4] px-8 text-white hover:bg-[#0066cc]"
+                onClick={handleAddToCart}
               >
                 <ShoppingCart className="mr-2 h-5 w-5" />
                 Add to Cart
@@ -84,36 +135,34 @@ export function HeroSection({ game }: HeroSectionProps) {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="rounded-xl border-2 hover:bg-muted bg-transparent"
+                  className="rounded border-[#333] bg-transparent text-white hover:bg-[#2a2a2a]"
                 >
                   <Play className="mr-2 h-5 w-5" />
-                  View Details
+                  Learn More
                 </Button>
               </Link>
             </div>
           </div>
 
-          {/* Image */}
-          <div className="order-1 lg:order-2">
+          {/* Featured Image */}
+          <div className="hidden lg:block">
             <Link href={`/games/${game.slug}`}>
-              <div className="relative aspect-video overflow-hidden rounded-2xl shadow-2xl shadow-primary/20 transition-transform duration-500 hover:scale-[1.02]">
-                <Image
-                  src={game.coverImage || "/placeholder.svg"}
-                  alt={game.title}
-                  fill
-                  className="object-cover"
-                  priority
-                />
-                <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10" />
+              <div className="relative aspect-video overflow-hidden rounded-lg shadow-2xl transition-transform duration-300 hover:scale-[1.02]">
+                {game.background_image && (
+                  <Image
+                    src={game.background_image || "/placeholder.svg"}
+                    alt={game.name}
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                )}
+                <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-lg" />
               </div>
             </Link>
           </div>
         </div>
       </div>
-
-      {/* Decorative elements */}
-      <div className="pointer-events-none absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
-      <div className="pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full bg-secondary/10 blur-3xl" />
     </section>
   )
 }

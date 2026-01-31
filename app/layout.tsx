@@ -1,15 +1,15 @@
 import React from "react"
 import type { Metadata, Viewport } from "next"
-import { Nunito } from "next/font/google"
+import { Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 
-const nunito = Nunito({ subsets: ["latin"], variable: "--font-nunito" })
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
 export const metadata: Metadata = {
-  title: "PlayVault - Your Ultimate Game Store",
+  title: "PlayVault Store",
   description:
-    "Discover and download the best games. Featured titles, trending games, and exclusive deals all in one place.",
+    "Download and play the best PC games. Discover new releases, trending titles, and exclusive deals.",
   generator: "v0.app",
   icons: {
     icon: [
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#FF6B6B",
+  themeColor: "#121212",
 }
 
 export default function RootLayout({
@@ -40,8 +40,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className={`${nunito.variable} font-sans antialiased`}>
+    <html lang="en" className="dark">
+      <body className={`${inter.variable} font-sans antialiased bg-background text-foreground`}>
         {children}
         <Analytics />
       </body>
